@@ -42,19 +42,18 @@ class _MyHomePageState extends State<MyHomePage> {
       bottomNavigationBar: FancyBottomNavigation(
         tabs: [
           TabData(
-              iconData: Icons.home,
-              title: "Home",
+              icon: Icon(Icons.home),
               onclick: () {
-                final FancyBottomNavigationState fState =
-                    bottomNavigationKey.currentState;
+                final FancyBottomNavigationState fState = bottomNavigationKey.currentState;
                 fState.setPage(2);
               }),
           TabData(
-              iconData: Icons.search,
-              title: "Search",
-              onclick: () => Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => SecondPage()))),
-          TabData(iconData: Icons.shopping_cart, title: "Basket")
+            icon: Icon(Icons.search),
+            onclick: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => SecondPage()),
+            ),
+          ),
+          TabData(icon: Icon(Icons.shopping_cart))
         ],
         initialSelection: 1,
         key: bottomNavigationKey,
@@ -86,8 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               color: Theme.of(context).primaryColor,
               onPressed: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => SecondPage()));
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => SecondPage()));
               },
             ),
             RaisedButton(
@@ -97,8 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               color: Theme.of(context).accentColor,
               onPressed: () {
-                final FancyBottomNavigationState fState =
-                    bottomNavigationKey.currentState;
+                final FancyBottomNavigationState fState = bottomNavigationKey.currentState;
                 fState.setPage(2);
               },
             )
@@ -116,8 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               color: Theme.of(context).primaryColor,
               onPressed: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => SecondPage()));
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => SecondPage()));
               },
             )
           ],

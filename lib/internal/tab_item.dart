@@ -11,16 +11,14 @@ const int ANIM_DURATION = 300;
 class TabItem extends StatelessWidget {
   TabItem(
       {@required this.uniqueKey,
-        @required this.selected,
-        @required this.iconData,
-        @required this.title,
-        @required this.callbackFunction,
-        @required this.textColor,
-        @required this.iconColor});
+      @required this.selected,
+      @required this.icon,
+      @required this.callbackFunction,
+      @required this.textColor,
+      @required this.iconColor});
 
   final UniqueKey uniqueKey;
-  final String title;
-  final IconData iconData;
+  final Widget icon;
   final bool selected;
   final Function(UniqueKey uniqueKey) callbackFunction;
   final Color textColor;
@@ -33,54 +31,31 @@ class TabItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          Container(
-            height: double.infinity,
-            width: double.infinity,
-            child: AnimatedAlign(
-                duration: Duration(milliseconds: ANIM_DURATION),
-                alignment: Alignment(0, (selected) ? TEXT_ON : TEXT_OFF),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    title,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    style: TextStyle(
-                        fontWeight: FontWeight.w600, color: textColor),
-                  ),
-                )),
-          ),
-          Container(
-            height: double.infinity,
-            width: double.infinity,
-            child: AnimatedAlign(
-              duration: Duration(milliseconds: ANIM_DURATION),
-              curve: Curves.easeIn,
-              alignment: Alignment(0, (selected) ? ICON_OFF : ICON_ON),
-              child: AnimatedOpacity(
-                duration: Duration(milliseconds: ANIM_DURATION),
-                opacity: (selected) ? ALPHA_OFF : ALPHA_ON,
-                child: IconButton(
-                  highlightColor: Colors.transparent,
-                  splashColor: Colors.transparent,
-                  padding: EdgeInsets.all(0),
-                  alignment: Alignment(0, 0),
-                  icon: Icon(
-                    iconData,
-                    color: iconColor,
-                  ),
-                  onPressed: () {
-                    callbackFunction(uniqueKey);
-                  },
-                ),
-              ),
+        child: Container(
+      height: double.infinity,
+      width: double.infinity,
+      child: AnimatedAlign(
+        duration: Duration(milliseconds: ANIM_DURATION),
+        curve: Curves.easeIn,
+        alignment: Alignment(0, (selected) ? ICON_OFF : ICON_ON),
+        child: AnimatedOpacity(
+          duration: Duration(milliseconds: ANIM_DURATION),
+          opacity: (selected) ? ALPHA_OFF : ALPHA_ON,
+          child: IconButton(
+            highlightColor: Colors.transparent,
+            splashColor: Colors.transparent,
+            padding: EdgeInsets.all(0),
+            alignment: Alignment(0, 0),
+            icon: IconTheme(
+              data: IconThemeData(color: iconColor),
+              child: icon,
             ),
-          )
-        ],
+            onPressed: () {
+              callbackFunction(uniqueKey);
+            },
+          ),
+        ),
       ),
-    );
+    ));
   }
 }

@@ -5,9 +5,9 @@ import 'package:fancy_bottom_navigation/paint/half_clipper.dart';
 import 'package:fancy_bottom_navigation/paint/half_painter.dart';
 import 'package:flutter/material.dart';
 
-const double CIRCLE_SIZE = 60;
-const double ARC_HEIGHT = 70;
-const double ARC_WIDTH = 90;
+const double CIRCLE_SIZE = 50;
+const double ARC_HEIGHT = 65;
+const double ARC_WIDTH = 85;
 const double CIRCLE_OUTLINE = 10;
 const double SHADOW_ALLOWANCE = 20;
 const double BAR_HEIGHT = 60;
@@ -42,10 +42,9 @@ class FancyBottomNavigation extends StatefulWidget {
   FancyBottomNavigationState createState() => FancyBottomNavigationState();
 }
 
-class FancyBottomNavigationState extends State<FancyBottomNavigation>
-    with TickerProviderStateMixin, RouteAware {
-  IconData nextIcon = Icons.search;
-  IconData activeIcon = Icons.search;
+class FancyBottomNavigationState extends State<FancyBottomNavigation> with TickerProviderStateMixin, RouteAware {
+  Widget nextIcon = SizedBox.shrink();
+  Widget activeIcon = SizedBox.shrink();
 
   int currentSelected = 0;
   double _circleAlignX = 0;
@@ -61,7 +60,7 @@ class FancyBottomNavigationState extends State<FancyBottomNavigation>
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    activeIcon = widget.tabs[currentSelected].iconData;
+    activeIcon = widget.tabs[currentSelected].icon;
 
     circleColor = (widget.circleColor == null)
         ? (Theme.of(context).brightness == Brightness.dark)
@@ -105,7 +104,7 @@ class FancyBottomNavigationState extends State<FancyBottomNavigation>
       setState(() {
         currentSelected = selected;
         _circleAlignX = -1 + (2 / (widget.tabs.length - 1) * selected);
-        nextIcon = widget.tabs[selected].iconData;
+        nextIcon = widget.tabs[selected].icon;
       });
     }
   }
@@ -118,10 +117,9 @@ class FancyBottomNavigationState extends State<FancyBottomNavigation>
       children: <Widget>[
         Container(
           height: BAR_HEIGHT,
-          decoration: BoxDecoration(color: barBackgroundColor, boxShadow: [
-            BoxShadow(
-                color: Colors.black12, offset: Offset(0, -1), blurRadius: 8)
-          ]),
+          decoration: BoxDecoration(
+              color: barBackgroundColor,
+              boxShadow: [BoxShadow(color: Colors.black12, offset: Offset(0, -1), blurRadius: 8)]),
           child: Row(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -129,13 +127,11 @@ class FancyBottomNavigationState extends State<FancyBottomNavigation>
                 .map((t) => TabItem(
                     uniqueKey: t.key,
                     selected: t.key == widget.tabs[currentSelected].key,
-                    iconData: t.iconData,
-                    title: t.title,
+                    icon: t.icon,
                     iconColor: inactiveIconColor,
                     textColor: textColor,
                     callbackFunction: (uniqueKey) {
-                      int selected = widget.tabs
-                          .indexWhere((tabData) => tabData.key == uniqueKey);
+                      int selected = widget.tabs.indexWhere((tabData) => tabData.key == uniqueKey);
                       widget.onTabChangedListener(selected);
                       _setSelected(uniqueKey);
                       _initAnimationAndStart(_circleAlignX, 1);
@@ -149,7 +145,8 @@ class FancyBottomNavigationState extends State<FancyBottomNavigation>
             child: AnimatedAlign(
               duration: Duration(milliseconds: ANIM_DURATION),
               curve: Curves.easeOut,
-              alignment: Alignment(_circleAlignX, 1),
+              // alignment: Alignment(_circleAlignX, 1),
+              alignment: Alignment(_circleAlignX * (Directionality.of(context) == TextDirection.rtl ? -1 : 1), 1),
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 15),
                 child: FractionallySizedBox(
@@ -160,10 +157,8 @@ class FancyBottomNavigationState extends State<FancyBottomNavigation>
                       alignment: Alignment.center,
                       children: <Widget>[
                         SizedBox(
-                          height:
-                              CIRCLE_SIZE + CIRCLE_OUTLINE + SHADOW_ALLOWANCE,
-                          width:
-                              CIRCLE_SIZE + CIRCLE_OUTLINE + SHADOW_ALLOWANCE,
+                          height: CIRCLE_SIZE + CIRCLE_OUTLINE + SHADOW_ALLOWANCE,
+                          width: CIRCLE_SIZE + CIRCLE_OUTLINE + SHADOW_ALLOWANCE,
                           child: ClipRect(
                               clipper: HalfClipper(),
                               child: Container(
@@ -174,11 +169,7 @@ class FancyBottomNavigationState extends State<FancyBottomNavigation>
                                       decoration: BoxDecoration(
                                           color: Colors.white,
                                           shape: BoxShape.circle,
-                                          boxShadow: [
-                                            BoxShadow(
-                                                color: Colors.black12,
-                                                blurRadius: 8)
-                                          ])),
+                                          boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 8)])),
                                 ),
                               )),
                         ),
@@ -192,18 +183,13 @@ class FancyBottomNavigationState extends State<FancyBottomNavigation>
                           height: CIRCLE_SIZE,
                           width: CIRCLE_SIZE,
                           child: Container(
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle, color: circleColor),
+                            decoration: BoxDecoration(shape: BoxShape.circle, color: circleColor),
                             child: Padding(
                               padding: const EdgeInsets.all(0.0),
                               child: AnimatedOpacity(
-                                duration:
-                                    Duration(milliseconds: ANIM_DURATION ~/ 5),
+                                duration: Duration(milliseconds: ANIM_DURATION ~/ 5),
                                 opacity: _circleIconAlpha,
-                                child: Icon(
-                                  activeIcon,
-                                  color: activeIconColor,
-                                ),
+                                child: IconTheme(data: IconThemeData(color: activeIconColor), child: activeIcon),
                               ),
                             ),
                           ),
@@ -248,10 +234,9 @@ class FancyBottomNavigationState extends State<FancyBottomNavigation>
 }
 
 class TabData {
-  TabData({@required this.iconData, @required this.title, this.onclick});
+  TabData({@required this.icon, this.onclick});
 
-  IconData iconData;
-  String title;
+  Widget icon;
   Function onclick;
   final UniqueKey key = UniqueKey();
 }
