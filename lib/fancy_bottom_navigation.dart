@@ -17,7 +17,7 @@ class FancyBottomNavigation extends StatefulWidget {
       {@required this.tabs,
       @required this.onTabChangedListener,
       this.key,
-      this.initialSelection = 0,
+      this.activeIndex = 0,
       this.circleColor,
       this.activeIconColor,
       this.inactiveIconColor,
@@ -34,7 +34,7 @@ class FancyBottomNavigation extends StatefulWidget {
   final Color textColor;
   final Color barBackgroundColor;
   final List<TabData> tabs;
-  final int initialSelection;
+  final int activeIndex;
 
   final Key key;
 
@@ -55,6 +55,10 @@ class FancyBottomNavigationState extends State<FancyBottomNavigation> with Ticke
   Color inactiveIconColor;
   Color barBackgroundColor;
   Color textColor;
+
+
+
+
 
   @override
   void didChangeDependencies() {
@@ -94,8 +98,12 @@ class FancyBottomNavigationState extends State<FancyBottomNavigation> with Ticke
   @override
   void initState() {
     super.initState();
-    _setSelected(widget.tabs[widget.initialSelection].key);
+    _setSelected(widget.tabs[widget.activeIndex].key);
   }
+
+
+
+
 
   _setSelected(UniqueKey key) {
     int selected = widget.tabs.indexWhere((tabData) => tabData.key == key);
@@ -133,8 +141,6 @@ class FancyBottomNavigationState extends State<FancyBottomNavigation> with Ticke
                     callbackFunction: (uniqueKey) {
                       int selected = widget.tabs.indexWhere((tabData) => tabData.key == uniqueKey);
                       widget.onTabChangedListener(selected);
-                      _setSelected(uniqueKey);
-                      _initAnimationAndStart(_circleAlignX, 1);
                     }))
                 .toList(),
           ),
@@ -223,7 +229,6 @@ class FancyBottomNavigationState extends State<FancyBottomNavigation> with Ticke
   }
 
   void setPage(int page) {
-    widget.onTabChangedListener(page);
     _setSelected(widget.tabs[page].key);
     _initAnimationAndStart(_circleAlignX, 1);
 
@@ -231,6 +236,14 @@ class FancyBottomNavigationState extends State<FancyBottomNavigation> with Ticke
       currentSelected = page;
     });
   }
+
+  @override
+  void didUpdateWidget(FancyBottomNavigation oldWidget) {
+     if(widget.activeIndex != oldWidget.activeIndex){
+       setPage(widget.activeIndex);
+     }
+  }
+
 }
 
 class TabData {
