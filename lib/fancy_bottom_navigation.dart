@@ -120,7 +120,7 @@ class FancyBottomNavigationState extends State<FancyBottomNavigation> with Ticke
   @override
   Widget build(BuildContext context) {
     return Stack(
-      overflow: Overflow.visible,
+      clipBehavior: Clip.none,
       alignment: Alignment.bottomCenter,
       children: <Widget>[
         Container(
